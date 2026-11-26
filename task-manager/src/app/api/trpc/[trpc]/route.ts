@@ -14,3 +14,6 @@ const handler = (req: Request) => {
 
 // Allows GET and POST requests
 export { handler as GET, handler as POST };
+
+// Uses the Node.js runtime for in-memory storage
+export const runtime = "nodejs";
