@@ -1,5 +1,33 @@
 {
+  "name": "Task-Manager",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
   "dependencies": {
-    "typescript": "^7.0.2"
+    "@tanstack/react-query": "^5.108.4",
+    "@trpc/client": "^11.31.3",
+    "@trpc/server": "^11.31.3",
+    "@trpc/tanstack-react-query": "^11.31.3",
+    "client-only": "^0.0.1",
+    "next": "^15.5.29",
+    "react": "19.3.0",
+    "react-dom": "19.3.0",
+    "server-only": "^0.0.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@tailwindcss/turbopack": "4.3.3",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "eslint": "^9",
+    "eslint-config-next": "^15.5.29",
+    "tailwindcss": "4.3.3",
+    "typescript": "^5"
   }
 }
