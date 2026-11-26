@@ -7,9 +7,7 @@ interface RootLayoutProps {
 }
 
 // Defines the root layout shared by all application pages.
-export default function RootLayout({
-  children,
-}: RootLayoutProps) {
+export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <html lang="en">
       <body>

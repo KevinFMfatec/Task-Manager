@@ -1,4 +1,3 @@
-
 import "server-only";
 
 // Represents the format of a task in the system
@@ -37,7 +36,7 @@ export function createTask(data: {
 
   // Add the newest task to the beginning of the list.
   tasks.unshift(newTask);
-  
+
   return newTask;
 }
 
@@ -47,7 +46,7 @@ export function updateTask(
   data: {
     title?: string;
     description?: string;
-  }
+  },
 ): Task | undefined {
   const taskIndex = tasks.findIndex((task) => task.id === id);
 

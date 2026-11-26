@@ -1,8 +1,4 @@
-
-import {
-  dehydrate,
-  HydrationBoundary,
-} from "@tanstack/react-query";
+import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 
 import { TaskForm } from "./task-form";
 import { TaskList } from "./task-list";
@@ -20,15 +16,13 @@ export default async function Home() {
       { limit: 10 },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
-      }
-    )
+      },
+    ),
   );
 
   return (
     <main className="mx-auto min-h-screen max-w-3xl px-6 py-12">
-      <h1 className="mb-8 text-3xl font-bold">
-        Task Manager
-      </h1>
+      <h1 className="mb-8 text-3xl font-bold">Task Manager</h1>
 
       <TaskForm />
 

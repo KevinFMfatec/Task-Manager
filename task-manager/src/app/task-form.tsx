@@ -19,31 +19,31 @@ export function TaskForm({ initialTask }: TaskFormProps) {
 
   const [title, setTitle] = useState(initialTask?.title ?? "");
   const [description, setDescription] = useState(
-    initialTask?.description ?? ""
+    initialTask?.description ?? "",
   );
 
-    // Handles task creation and refreshes the first page after success.
-    const createTask = useMutation(
-      trpc.create.mutationOptions({
-        onSuccess: async () => {
-          // Clear the form fields after successful creation.
-          setTitle("");
-          setDescription("");
+  // Handles task creation and refreshes the first page after success.
+  const createTask = useMutation(
+    trpc.create.mutationOptions({
+      onSuccess: async () => {
+        // Clear the form fields after successful creation.
+        setTitle("");
+        setDescription("");
 
-          // Reset the infinite query to reload its first page.
-          await queryClient.resetQueries({
-            queryKey: trpc.list.infiniteQueryKey({ limit: 10 }),
-          });
-        },
-      })
-    );
+        // Reset the infinite query to reload its first page.
+        await queryClient.resetQueries({
+          queryKey: trpc.list.infiniteQueryKey({ limit: 10 }),
+        });
+      },
+    }),
+  );
 
   const updateTask = useMutation(
     trpc.update.mutationOptions({
       onSuccess: async () => {
         // Reset the task list to keep pagination consistent after updates.
         await queryClient.resetQueries({
-        queryKey: trpc.list.infiniteQueryKey({ limit: 10 }),
+          queryKey: trpc.list.infiniteQueryKey({ limit: 10 }),
         });
 
         if (initialTask) {
@@ -54,7 +54,7 @@ export function TaskForm({ initialTask }: TaskFormProps) {
 
         router.push("/");
       },
-    })
+    }),
   );
 
   const isPending = createTask.isPending || updateTask.isPending;
@@ -119,29 +119,19 @@ export function TaskForm({ initialTask }: TaskFormProps) {
         />
       </div>
 
-      {error && (
-        <p className="text-sm text-red-600">
-          {error.message}
-        </p>
-      )}
+      {error && <p className="text-sm text-red-600">{error.message}</p>}
 
       {/* Displays a success message after task creation. */}
-        {createTask.isSuccess && !isEditing && (
-        <p className="text-sm text-green-600">
-            Task created successfully!
-        </p>
-        )}
+      {createTask.isSuccess && !isEditing && (
+        <p className="text-sm text-green-600">Task created successfully!</p>
+      )}
 
       <button
         type="submit"
         disabled={isPending || !title.trim()}
         className="rounded bg-blue-600 px-4 py-2 text-white disabled:opacity-50"
       >
-        {isPending
-          ? "Saving..."
-          : isEditing
-            ? "Update task"
-            : "Create task"}
+        {isPending ? "Saving..." : isEditing ? "Update task" : "Create task"}
       </button>
     </form>
   );

@@ -1,4 +1,3 @@
-
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
 
@@ -19,14 +18,20 @@ const createTaskSchema = z.object({
 });
 
 // Validation of the data used to update a task
-const updateTaskSchema = z.object({
-  id: z.uuid("Invalid ID"),
-  title: z.string().trim().min(1, "The title cannot be left empty").optional(),
-  description: z.string().optional(),
-}).refine(
-  (data) => data.title !== undefined || data.description !== undefined,
-  { message: "Provide at least one field to update" }
-);
+const updateTaskSchema = z
+  .object({
+    id: z.uuid("Invalid ID"),
+    title: z
+      .string()
+      .trim()
+      .min(1, "The title cannot be left empty")
+      .optional(),
+    description: z.string().optional(),
+  })
+  .refine(
+    (data) => data.title !== undefined || data.description !== undefined,
+    { message: "Provide at least one field to update" },
+  );
 
 const listTasksSchema = z.object({
   limit: z.number().min(1).max(50).default(10),
@@ -36,15 +41,10 @@ const listTasksSchema = z.object({
 // Groups all operations related to the tasks
 export const appRouter = router({
   // List all tasks
-  list: publicProcedure
-  .input(listTasksSchema)
-  .query(({ input }) => {
+  list: publicProcedure.input(listTasksSchema).query(({ input }) => {
     const tasks = getTasks();
 
-    const items = tasks.slice(
-      input.cursor,
-      input.cursor + input.limit
-    );
+    const items = tasks.slice(input.cursor, input.cursor + input.limit);
 
     const nextCursor =
       input.cursor + items.length < tasks.length
@@ -59,9 +59,11 @@ export const appRouter = router({
 
   // Search for a specific task
   getById: publicProcedure
-    .input(z.object({
-      id: z.uuid(),
-    }))
+    .input(
+      z.object({
+        id: z.uuid(),
+      }),
+    )
     .query(({ input }) => {
       const task = getTaskById(input.id);
 
@@ -76,35 +78,33 @@ export const appRouter = router({
     }),
 
   // Create a new task
-  create: publicProcedure
-    .input(createTaskSchema)
-    .mutation(({ input }) => {
-      return createTask(input);
-    }),
+  create: publicProcedure.input(createTaskSchema).mutation(({ input }) => {
+    return createTask(input);
+  }),
 
   // Updates an existing task
-  update: publicProcedure
-    .input(updateTaskSchema)
-    .mutation(({ input }) => {
-      const { id, ...data } = input;
+  update: publicProcedure.input(updateTaskSchema).mutation(({ input }) => {
+    const { id, ...data } = input;
 
-      const task = updateTask(id, data);
+    const task = updateTask(id, data);
 
-      if (!task) {
-        throw new TRPCError({
-          code: "NOT_FOUND",
-          message: "Unable to update: task not found",
-        });
-      }
+    if (!task) {
+      throw new TRPCError({
+        code: "NOT_FOUND",
+        message: "Unable to update: task not found",
+      });
+    }
 
-      return task;
-    }),
+    return task;
+  }),
 
   // Deletes an existing task
   delete: publicProcedure
-    .input(z.object({
-      id: z.uuid(),
-    }))
+    .input(
+      z.object({
+        id: z.uuid(),
+      }),
+    )
     .mutation(({ input }) => {
       const deleted = deleteTask(input.id);
 

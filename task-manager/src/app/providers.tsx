@@ -2,15 +2,9 @@
 
 import { useState, type ReactNode } from "react";
 
-import {
-  QueryClient,
-  QueryClientProvider,
-} from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-import {
-  createTRPCClient,
-  httpBatchLink,
-} from "@trpc/client";
+import { createTRPCClient, httpBatchLink } from "@trpc/client";
 
 import { TRPCProvider } from "@/utils/trpc";
 import type { AppRouter } from "@/server/router";
@@ -42,7 +36,7 @@ export function Providers({ children }: ProvidersProps) {
             staleTime: 30 * 1000,
           },
         },
-      })
+      }),
   );
 
   // Creates the tRPC client.
@@ -53,15 +47,12 @@ export function Providers({ children }: ProvidersProps) {
           url: `${getBaseUrl()}/api/trpc`,
         }),
       ],
-    })
+    }),
   );
 
   return (
     <QueryClientProvider client={queryClient}>
-      <TRPCProvider
-        trpcClient={trpcClient}
-        queryClient={queryClient}
-      >
+      <TRPCProvider trpcClient={trpcClient} queryClient={queryClient}>
         {children}
       </TRPCProvider>
     </QueryClientProvider>

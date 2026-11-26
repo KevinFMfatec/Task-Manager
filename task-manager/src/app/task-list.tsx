@@ -1,8 +1,11 @@
-
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { useInfiniteQuery, useMutation, useQueryClient } from "@tanstack/react-query";
+import {
+  useInfiniteQuery,
+  useMutation,
+  useQueryClient,
+} from "@tanstack/react-query";
 
 import { useTRPC } from "@/utils/trpc";
 
@@ -25,32 +28,32 @@ export function TaskList() {
       { limit: 10 },
       {
         getNextPageParam: (lastPage) => lastPage.nextCursor,
-      }
-    )
+      },
+    ),
   );
 
   // Handles task deletion and resets the paginated list after success.
-const deleteTask = useMutation(
-  trpc.delete.mutationOptions({
-    onSuccess: async () => {
-      // Display a success message after deletion.
-      setSuccessMessage("Task deleted successfully!");
+  const deleteTask = useMutation(
+    trpc.delete.mutationOptions({
+      onSuccess: async () => {
+        // Display a success message after deletion.
+        setSuccessMessage("Task deleted successfully!");
 
-      // Reset the pagination to prevent offset inconsistencies.
-      await queryClient.resetQueries({
-        queryKey: trpc.list.infiniteQueryKey({ limit: 10 }),
-      });
-    },
-    onError: () => {
-      // Clear the success message when deletion fails.
-      setSuccessMessage("");
-    },
-  })
-);
+        // Reset the pagination to prevent offset inconsistencies.
+        await queryClient.resetQueries({
+          queryKey: trpc.list.infiniteQueryKey({ limit: 10 }),
+        });
+      },
+      onError: () => {
+        // Clear the success message when deletion fails.
+        setSuccessMessage("");
+      },
+    }),
+  );
 
   function handleDelete(id: string) {
     const confirmed = window.confirm(
-      "Are you sure you want to delete this task?"
+      "Are you sure you want to delete this task?",
     );
 
     if (!confirmed) {
@@ -63,35 +66,35 @@ const deleteTask = useMutation(
 
   // Observes the end of the list and loads the next page.
   // Observes the list boundary and requests additional pages when visible.
-useEffect(() => {
-  const target = observerTarget.current;
+  useEffect(() => {
+    const target = observerTarget.current;
 
-  // Skip observation when there are no more pages to load.
-  if (!target || !hasNextPage || isFetchingNextPage) {
-    return;
-  }
-
-  const observer = new IntersectionObserver(
-  (entries) => {
-    const entry = entries[0];
-
-    // Loads the next page before the user reaches the actual end.
-    if (entry?.isIntersecting) {
-      fetchNextPage({ cancelRefetch: false });
+    // Skip observation when there are no more pages to load.
+    if (!target || !hasNextPage || isFetchingNextPage) {
+      return;
     }
-  },
-  {
-    root: null,
-    rootMargin: "200px",
-    threshold: 0,
-  }
-);
 
-  observer.observe(target);
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const entry = entries[0];
 
-  // Disconnect the observer when the component updates or unmounts.
-  return () => observer.disconnect();
-}, [hasNextPage, isFetchingNextPage, fetchNextPage]);
+        // Loads the next page before the user reaches the actual end.
+        if (entry?.isIntersecting) {
+          fetchNextPage({ cancelRefetch: false });
+        }
+      },
+      {
+        root: null,
+        rootMargin: "200px",
+        threshold: 0,
+      },
+    );
+
+    observer.observe(target);
+
+    // Disconnect the observer when the component updates or unmounts.
+    return () => observer.disconnect();
+  }, [hasNextPage, isFetchingNextPage, fetchNextPage]);
 
   if (isPending) {
     return <p>Loading tasks...</p>;
@@ -99,9 +102,7 @@ useEffect(() => {
 
   if (error) {
     return (
-      <p className="text-red-600">
-        Could not load tasks: {error.message}
-      </p>
+      <p className="text-red-600">Could not load tasks: {error.message}</p>
     );
   }
 
@@ -124,9 +125,7 @@ useEffect(() => {
       )}
 
       {tasks.length === 0 ? (
-        <p className="text-gray-500">
-          No tasks found. Create your first task!
-        </p>
+        <p className="text-gray-500">No tasks found. Create your first task!</p>
       ) : (
         <ul className="space-y-4">
           {tasks.map((task) => (
@@ -138,14 +137,11 @@ useEffect(() => {
                 <h3 className="font-semibold">{task.title}</h3>
 
                 {task.description && (
-                  <p className="mt-2 text-gray-600">
-                    {task.description}
-                  </p>
+                  <p className="mt-2 text-gray-600">{task.description}</p>
                 )}
 
                 <p className="mt-3 text-sm text-gray-500">
-                  Created:{" "}
-                  {new Date(task.creationDate).toLocaleString("en-US")}
+                  Created: {new Date(task.creationDate).toLocaleString("en-US")}
                 </p>
               </div>
 
@@ -170,12 +166,8 @@ useEffect(() => {
           ))}
         </ul>
       )}
-        {/* Detects when the user reaches the end of the task list. */}
-      <div
-        ref={observerTarget}
-        className="py-6 text-center"
-      >
-        
+      {/* Detects when the user reaches the end of the task list. */}
+      <div ref={observerTarget} className="py-6 text-center">
         {isFetchingNextPage && <p>Loading more tasks...</p>}
 
         {!hasNextPage && tasks.length > 0 && (

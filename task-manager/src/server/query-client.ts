@@ -1,4 +1,3 @@
-
 import "server-only";
 
 import { cache } from "react";
@@ -13,5 +12,5 @@ export const getQueryClient = cache(
           staleTime: 30 * 1000,
         },
       },
-    })
+    }),
 );
