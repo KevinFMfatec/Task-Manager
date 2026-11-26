@@ -28,11 +28,33 @@ const updateTaskSchema = z.object({
   { message: "Provide at least one field to update" }
 );
 
+const listTasksSchema = z.object({
+  limit: z.number().min(1).max(50).default(10),
+  cursor: z.number().min(0).default(0),
+});
+
 // Groups all operations related to the tasks
 export const appRouter = router({
   // List all tasks
-  list: publicProcedure.query(() => {
-    return getTasks();
+  list: publicProcedure
+  .input(listTasksSchema)
+  .query(({ input }) => {
+    const tasks = getTasks();
+
+    const items = tasks.slice(
+      input.cursor,
+      input.cursor + input.limit
+    );
+
+    const nextCursor =
+      input.cursor + items.length < tasks.length
+        ? input.cursor + items.length
+        : undefined;
+
+    return {
+      items,
+      nextCursor,
+    };
   }),
 
   // Search for a specific task
@@ -46,7 +68,7 @@ export const appRouter = router({
       if (!task) {
         throw new TRPCError({
           code: "NOT_FOUND",
-          message: "Tarefa não encontrada.",
+          message: "Task not found",
         });
       }
 

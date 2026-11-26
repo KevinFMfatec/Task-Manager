@@ -35,8 +35,9 @@ export function createTask(data: {
     creationDate: Date.now(),
   };
 
-  tasks.push(newTask);
-
+  // Add the newest task to the beginning of the list.
+  tasks.unshift(newTask);
+  
   return newTask;
 }
 
